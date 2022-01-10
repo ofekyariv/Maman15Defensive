@@ -1,3 +1,6 @@
+import socket
+import database
+
 def read_port():
     with open('myoirt,info', 'r') as my_port:
         return my_port.read()
@@ -5,6 +8,7 @@ def read_port():
 
 def main():
     port = read_port()
+    data = database
 
 
 if __name__ == '__main__':
