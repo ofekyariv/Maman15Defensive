@@ -11,11 +11,6 @@ class Selector:
             self.s.setblocking(False)
             self.sel = selectors.DefaultSelector()
             self.sel.register(self.s, selectors.EVENT_READ, self.accept)
-            while True:
-                events = self.s.select()
-                for key, mask in events:
-                    callback = key.data
-                    callback(key.filleobj, mask)
 
     def accept(self, sock, mask):
         conn, addr = sock.accept()
@@ -32,3 +27,10 @@ class Selector:
             data = conn.recv(1024)
         logging.info(f'closing {conn}')
         self.s.unregister(conn)
+
+    def run_server(self):
+        while True:
+            events = self.s.select()
+            for key, mask in events:
+                callback = key.data
+                callback(key.filleobj, mask)
