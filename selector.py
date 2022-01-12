@@ -11,26 +11,29 @@ class Selector:
             self.s.setblocking(False)
             self.sel = selectors.DefaultSelector()
             self.sel.register(self.s, selectors.EVENT_READ, self.accept)
+            self.run_server()
 
     def accept(self, sock, mask):
         conn, addr = sock.accept()
         logging.info(f'accepted connection from {addr}')
         conn.setblocking(False)
-        self.s.register(conn, selectors.EVENT_READ, self.read)
+        self.sel.register(conn, selectors.EVENT_READ, self.read)
 
     def read(self, conn, mask):
-        full_data = ''
+        full_data = b''
         data = conn.recv(1024)
-        while data:
+        conn.send(data)
+        '''while data:
             full_data += data
             logging.info(f'got {repr(data)} from {conn}')
-            data = conn.recv(1024)
+            data = conn.recv(1024)'''
         logging.info(f'closing {conn}')
-        self.s.unregister(conn)
+        self.sel.unregister(conn)
+        conn.close()
 
     def run_server(self):
         while True:
-            events = self.s.select()
+            events = self.sel.select()
             for key, mask in events:
                 callback = key.data
-                callback(key.filleobj, mask)
+                callback(key.fileobj, mask)

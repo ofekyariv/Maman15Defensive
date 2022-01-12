@@ -5,7 +5,7 @@ import selector
 
 
 def read_port():
-    with open('myoirt,info', 'r') as my_port:
+    with open('myport.info', 'r') as my_port:
         return my_port.read()
 
 
@@ -17,7 +17,6 @@ def main():
         logging.info(f'Error in port casting to int {read_port()}')
     data = database
     server = selector.Selector(port)
-    server.run_server()
 
 
 if __name__ == '__main__':
